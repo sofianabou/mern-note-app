@@ -1,6 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
+import notes from "./routes/notes.js";
+
 
 dotenv.config({
     path: "./config/confog.env",
@@ -12,9 +14,9 @@ const port = 3001;
 app.use(express.json());
 app.use(morgan("dev"));
 
-app.get('/', (req, res) => {
-    res.send("Hello World");
-});
+app.use("/api/v1/notes", notes);
+
+
 
 app.listen(port, () => {
     console.log("Server is up and run on port 3001");
