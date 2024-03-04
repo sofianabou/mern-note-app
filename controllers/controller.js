@@ -7,6 +7,7 @@ export const getNotes = (req, res) => {
 };
 
 export const getNote = (req, res) => {
+    console.log("ok");
     res.send("get single note");
 };
 
