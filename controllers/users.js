@@ -4,6 +4,10 @@ import validator from "validator";
 import  Jwt  from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
+
+
+
+
 const generateToken = (id) => {
     return Jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: "3d",
@@ -55,10 +59,6 @@ try {
 
 };
 
-
-
-
-    
 
 export const login =  async(req, res) => {
     const { email, password } = req.body;

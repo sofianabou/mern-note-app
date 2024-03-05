@@ -1,6 +1,4 @@
 import  Jwt  from "jsonwebtoken";
-import User from "../models/User.js";
-
 
 export const requireAuth = (req, res, next) => {
     const { authorization } = req.headers;
@@ -24,8 +22,8 @@ export const requireAuth = (req, res, next) => {
 
         const { id } = playload;
 
-        const user = await User.findById(id);
-        req.user = user;
+        req.userId = id;
+
         next();
     });
 }
