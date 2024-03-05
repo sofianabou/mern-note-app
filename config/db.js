@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 export const connectDB = async () => {
     try {
         const conn = await mongoose.connect(process.env.URI, {
-            useNewUrlParser: true,
+            //useNewUrlParser: true,
             
         });
         console.log(`MongoDB connected: ${conn.connection.host}`);

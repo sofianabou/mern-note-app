@@ -18,12 +18,20 @@ export const getNotes = async (req, res) => {
 }
 
 export const getNote =  async(req, res) => {
+     //check if valid mongo id
+     if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)){
+        return res.status(400).json({
+            succes: false,
+            error: "Invalid note id",
+        })
+    }
     try {
+       
         const note = await Note.findById(req.params.id);
         if (!note) {
             return res.status(400).json({
                 succes: false,
-                error: 'No note found',
+                error: "No not found",
             });
         }
         res.status(200).json({
@@ -88,14 +96,13 @@ export const updateNote = async (req, res) => {
 
 export const deleteNote = async (req, res) => {
     try{
-        const note = await Note.findById(req.params.id);
+        const note = await Note.findByIdAndDelete(req.params.id);
         if (!note) {
             return res.status(400).json({
                 succes: false,
-                error: "Nonote found",
+                error: "No note found",
             });
         } 
-        await note.remove();
         res.status(200).json({
             succes: true,
             data: {},
