@@ -4,8 +4,9 @@ import Note from "../models/Note.js";
 
 
 export const getNotes = async (req, res) => {
+    const userId = req.userId;
     try{
-        const notes = await Note.find();
+        const notes = await Note.find({ userId});
         res.status(200).json({
             success: true,
             data: notes,
@@ -18,7 +19,7 @@ export const getNotes = async (req, res) => {
 }
 
 export const getNote =  async(req, res) => {
-     //check if valid mongo id
+     
      if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)){
         return res.status(400).json({
             succes: false,
@@ -47,8 +48,13 @@ export const getNote =  async(req, res) => {
 };
 
 export const createNote = async  (req, res) => {
+
+    const userId = req.userId;
     try {
-        const note = await Note.create(req.body);
+        const note = await Note.create({
+            ...req.body,
+            user: userId,
+        });
         res.status(201).json({
             succes: true,
             data: note,
