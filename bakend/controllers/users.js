@@ -1,4 +1,3 @@
-
 import User from "../models/User.js";
 import validator from "validator";
 import  Jwt  from "jsonwebtoken";

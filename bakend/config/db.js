@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
 
+const URI = "mongodb://localhost:27017/dbkanban";
+
 export const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(process.env.URI, {
+        const conn = await mongoose.connect(URI, {
             useNewUrlParser: true,
-            useUnifiedTopology: true, // Vous pouvez également ajouter cette option
+            useUnifiedTopology: true,
         });
         console.log(`MongoDB connected: ${conn.connection.host}`);
     } catch (error) {
@@ -12,3 +14,4 @@ export const connectDB = async () => {
         process.exit(1);
     }
 };
+
