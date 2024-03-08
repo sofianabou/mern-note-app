@@ -4,9 +4,6 @@ import  Jwt  from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 
-
-
-
 const generateToken = (id) => {
     return Jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: "3d",
@@ -40,7 +37,9 @@ if (!validator.isStrongPassword(password)) {
 try {
     const userExists = await User.findOne({ email });
     if (userExists) {
-        return res.status(400).json({ success: false, error: "User already exists" });
+        return res
+        .status(400)
+        .json({ success: false, error: "User already exists" });
     }
     const salt = await bcrypt.genSalt(5);
     const hashedPassword = await bcrypt.hash(password, salt); 

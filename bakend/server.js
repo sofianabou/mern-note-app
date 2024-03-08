@@ -1,10 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
+import cors from "cors";
 import notes from "./routes/notes.js";
 import users from "./routes/users.js";
 import { connectDB } from "./config/db.js";
-import cors from "cors";
 
 dotenv.config({
     path: "./config/config.env",
@@ -25,6 +25,13 @@ app.use("/api/v1/users", users);
 
 
 app.listen(port, () => {
-    console.log("Server is up and run on port 3001");
+    try {
+        connectDB();
+        console.log("Server is running on port 3001");
+        console.log("Connected to MongoDB");
+      } catch (error) {
+        console.error(`Error: ${error.message}`);
+               process.exit(1);
+      }
 });
 

@@ -1,94 +1,105 @@
-import React, { useState } from "react";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/auth";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
-const CreateNote = () => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [color, setColor] = useState("#ffffff");
+const Notes = () => {
+  const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const { user } = useAuth();
 
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const note = {
-      title,
-      description,
-      color,
-    };
-
+  const handleDeleteNote = async (id) => {
     const res = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/api/v1/notes`,
+      `${import.meta.env.VITE_API_BASE_URL}/api/v1/notes/${id}`,
       {
-        method: "POST",
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user}`,
         },
-        body: JSON.stringify(note),
       }
     );
 
     const data = await res.json();
 
-    if (data.success) {
-      setTitle("");
-      setDescription("");
-      setColor("#ffffff");
-      toast.success("Note created");
-      navigate("/notes");
-    }
+    setNotes(notes.filter((note) => note._id !== id));
 
-    if (!data.success) {
-      toast.error(data.error);
+    if (data.success) {
+      toast.success("Note deleted");
     }
   };
 
+  const getAllNotes = async () => {
+    const res = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/api/v1/notes`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user}`,
+        },
+      }
+    );
+
+    const data = await res.json();
+    setLoading(false);
+
+    if (data.success) {
+      setNotes(data.data);
+    }
+  };
+
+  useEffect(() => {
+    getAllNotes();
+  }, []);
+
+  if (loading) return <h1>Loading...</h1>;
+
   return (
-    <div className="flex flex-col gap-4 p-4 min-h-screen items-center justify-center">
-      <form className="flex flex-col gap-4 container" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Title"
-          name="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="bg-gray-100 px-4 py-2 rounded-md"
-        />
+    <div className="container py-8 flex flex-col gap-4">
+      {notes.length === 0 && (
+        <h1 className="text-2xl  font-bold">No notes found</h1>
+      )}
 
-        <input
-          type="text"
-          placeholder="Description"
-          name="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="bg-gray-100 px-4 py-2 rounded-md"
-        />
+      <div className=" flex flex-wrap gap-4 p-4">
+        {notes.map((note) => (
+          <div
+            key={note._id}
+            className="flex flex-col gap-4 p-4 items-center justify-center rounded-md  text-gray-800"
+            style={{ backgroundColor: note.color }}
+          >
+            <h1 className="text-2xl font-bold">{note.title}</h1>
+            <p className="text-xl">{note.description}</p>
+            <button>
+              <Link
+                to={`/notes/update/${note._id}`}
+                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+              >
+                Update Note
+              </Link>
+            </button>
 
-        <select
-          name="color"
-          value={color}
-          onChange={(e) => setColor(e.target.value)}
-          className="bg-gray-100 px-4 py-2 rounded-md"
-        >
-          <option value="#ffffff">White</option>
-          <option value="#ff0000">Red</option>
-          <option value="#00ff00">Green</option>
-          <option value="#0000ff">Blue</option>
-        </select>
-        <button
-          type="submit"
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-md"
+              onClick={() => handleDeleteNote(note._id)}
+            >
+              Delete Note
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <button>
+        <Link
+          to="/notes/create"
           className="bg-blue-500 text-white px-4 py-2 rounded-md"
         >
           Create Note
-        </button>
-      </form>
+        </Link>
+      </button>
     </div>
   );
 };
 
-export default CreateNote;
+export default Notes;

@@ -12,8 +12,6 @@ export const requireAuth = (req, res, next) => {
 
     const token = authorization.replace('Bearer ', '');  
 
-
-
     Jwt.verify(token, process.env.Jwt_SECRET, async (err, playload) => {
         if (err) {
             return res.status(401).json({

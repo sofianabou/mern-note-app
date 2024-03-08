@@ -16,6 +16,7 @@ const App = () => {
   const { user } = useAuth();
 
   return (
+    
     <>
       <ToastContainer />
       <Navbar />
