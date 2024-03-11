@@ -1,22 +1,23 @@
 import React from "react";
-import Navbar from "./components/Navbar.jsx";
-import Register from "./pages/Register";
-import Login from "./pages/Login";
-import Home from "./pages/Home";
-import Notes from "./pages/Notes";
-import CreateNote from "./pages/CreateNote";
-import UpdateNote from "./pages/UpdateNote";
-import PrivateRoutes from "./utils/PrivateRoutes";
+import Navbar from "./components/Navbar";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./contexts/auth";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import Home from "./pages/Home";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import Notes from "./pages/Notes";
+import CreateNote from "./pages/CreateNote";
+import UpdateNote from "./pages/UpdateNote";
+import PrivateRoutes from "./utils/PrivateRoutes";
+
+
 const App = () => {
   const { user } = useAuth();
 
   return (
-    
     <>
       <ToastContainer />
       <Navbar />

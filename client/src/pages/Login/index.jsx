@@ -3,7 +3,6 @@ import { useAuth } from "../../contexts/auth";
 
 const Login = () => {
   const { loginUser } = useAuth();
-
   const loginRef = useRef(null);
 
   const handleSubmit = (e) => {

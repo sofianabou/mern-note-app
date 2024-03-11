@@ -6,47 +6,52 @@ import { toast } from "react-toastify";
 const Notes = () => {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const { user } = useAuth();
 
   const handleDeleteNote = async (id) => {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/api/v1/notes/${id}`,
-      {
+    try {
+      const res = await fetch(`http://localhost:3000/api/v1/notes/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user}`,
         },
+      });
+
+      const data = await res.json();
+
+      setNotes(notes.filter((note) => note._id !== id));
+
+      if (data.success) {
+        toast.success("Note deleted");
+      } else {
+        toast.error(data.error);
       }
-    );
-
-    const data = await res.json();
-
-    setNotes(notes.filter((note) => note._id !== id));
-
-    if (data.success) {
-      toast.success("Note deleted");
+    } catch (error) {
+      console.error("Error during note deletion:", error);
     }
   };
 
   const getAllNotes = async () => {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/api/v1/notes`,
-      {
+    try {
+      const res = await fetch(`http://localhost:3000/api/v1/notes`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user}`,
         },
+      });
+
+      const data = await res.json();
+      setLoading(false);
+
+      if (data.success) {
+        setNotes(data.data);
+      } else {
+        toast.error(data.error);
       }
-    );
-
-    const data = await res.json();
-    setLoading(false);
-
-    if (data.success) {
-      setNotes(data.data);
+    } catch (error) {
+      console.error("Error fetching notes:", error);
     }
   };
 
@@ -59,14 +64,14 @@ const Notes = () => {
   return (
     <div className="container py-8 flex flex-col gap-4">
       {notes.length === 0 && (
-        <h1 className="text-2xl  font-bold">No notes found</h1>
+        <h1 className="text-2xl font-bold">No notes found</h1>
       )}
 
-      <div className=" flex flex-wrap gap-4 p-4">
+      <div className="flex flex-wrap gap-4 p-4">
         {notes.map((note) => (
           <div
             key={note._id}
-            className="flex flex-col gap-4 p-4 items-center justify-center rounded-md  text-gray-800"
+            className="flex flex-col gap-4 p-4 items-center justify-center rounded-md text-gray-800"
             style={{ backgroundColor: note.color }}
           >
             <h1 className="text-2xl font-bold">{note.title}</h1>

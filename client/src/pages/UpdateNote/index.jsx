@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 
 const UpdateNote = () => {
   const [loading, setLoading] = useState(true);
-
   const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
@@ -13,7 +12,6 @@ const UpdateNote = () => {
   const [color, setColor] = useState("#ffffff");
 
   const { user } = useAuth();
-
   const { id } = useParams();
 
   const handleSubmit = async (e) => {
@@ -25,52 +23,54 @@ const UpdateNote = () => {
       color,
     };
 
-    const res = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/api/v1/notes/${id}`,
-      {
+    try {
+      const res = await fetch(`http://localhost:3000/api/v1/notes/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user}`,
         },
         body: JSON.stringify(note),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setTitle("");
+        setDescription("");
+        setColor("#ffffff");
+        toast.success("Note updated");
+        navigate("/notes");
+      } else {
+        toast.error(data.error);
       }
-    );
-
-    const data = await res.json();
-
-    if (data.success) {
-      setTitle("");
-      setDescription("");
-      setColor("#ffffff");
-      toast.success("Note created");
-      navigate("/notes");
-    }
-
-    if (!data.success) {
-      toast.error(data.error);
+    } catch (error) {
+      console.error("Error during note update:", error);
     }
   };
 
   const getNote = async () => {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/api/v1/notes/${id}`,
-      {
+    try {
+      const res = await fetch(`http://localhost:3000/api/v1/notes/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user}`,
         },
+      });
+
+      const data = await res.json();
+      setLoading(false);
+
+      if (data.success) {
+        setTitle(data.data.title);
+        setDescription(data.data.description);
+        setColor(data.data.color);
+      } else {
+        toast.error(data.error);
       }
-    );
-
-    const data = await res.json();
-    setLoading(false);
-
-    if (data.success) {
-      setTitle(data.data.title);
-      setDescription(data.data.description);
-      setColor(data.data.color);
+    } catch (error) {
+      console.error("Error fetching note:", error);
     }
   };
 

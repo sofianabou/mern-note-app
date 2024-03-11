@@ -5,27 +5,29 @@ import Note from "../models/Note.js";
 
 export const getNotes = async (req, res) => {
     const userId = req.userId;
-    try{
-        const notes = await Note.find({ userId});
-        res.status(200).json({
-            success: true,
-            data: notes,
-        });
-    }catch (error) {
-        res.status(400).json({
-            succes: false,
-        });
+    try {
+      const notes = await Note.find({ userId });
+      res.status(200).json({
+        success: true,
+        data: notes,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: error.message,
+      });
     }
-};
+  };
+  
 
 export const getNote =  async (req, res) => {
-     /*
+     
      if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)){
         return res.status(400).json({
             succes: false,
             error: "Invalid note id",
         })
-    }*/
+    }
     try {
        
         const note = await Note.findById(req.params.id);

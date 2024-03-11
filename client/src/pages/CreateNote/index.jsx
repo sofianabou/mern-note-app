@@ -9,7 +9,6 @@ const CreateNote = () => {
   const [color, setColor] = useState("#ffffff");
 
   const { user } = useAuth();
-
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -21,30 +20,29 @@ const CreateNote = () => {
       color,
     };
 
-    const res = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/api/v1/notes`,
-      {
+    try {
+      const res = await fetch(`http://localhost:3000/api/v1/notes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user}`,
         },
         body: JSON.stringify(note),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setTitle("");
+        setDescription("");
+        setColor("#ffffff");
+        toast.success("Note created");
+        navigate("/notes");
+      } else {
+        toast.error(data.error);
       }
-    );
-
-    const data = await res.json();
-
-    if (data.success) {
-      setTitle("");
-      setDescription("");
-      setColor("#ffffff");
-      toast.success("Note created");
-      navigate("/notes");
-    }
-
-    if (!data.success) {
-      toast.error(data.error);
+    } catch (error) {
+      console.error("Error during note creation:", error);
     }
   };
 
