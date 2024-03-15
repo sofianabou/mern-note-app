@@ -37,7 +37,7 @@ app.listen(port, () => {
         console.log("Server is running on port 3000");
         console.log("Connected to MongoDB");
       } catch (error) {
-        console.error(`Error: ${error.message}`);
+        console.error(`Error: not connected`);
                process.exit(1);
       }
 });
