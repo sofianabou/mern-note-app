@@ -15,3 +15,7 @@ export const connectDB = async () => {
     }
 };
 
+/*MONGO_URI="mongodb://localhost:27017/dbkanban"
+JWT_SECRET="Sofiane@Test123456789"
+VITE_API_BASE_URL=http://localhost:3000
+*/
